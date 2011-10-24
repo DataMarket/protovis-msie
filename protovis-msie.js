@@ -39,7 +39,7 @@ if ( !Array.prototype.indexOf ) {
 // only run if we need to
 if ( !pv.have_SVG && pv.have_VML ){(function(){
 
-if ( typeof Date.now === 'function' ) {
+if ( typeof Date.now !== 'function' ) {
   Date.now = function () { return new Date() * 1; };
 }
 
