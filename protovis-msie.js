@@ -213,7 +213,7 @@ var vml = {
         es.height = ( r * 2 ) + "px";
         vml.fill( elm, attr );
         vml.stroke( elm, attr );
-      },
+      }
     },
 
     "text": {
