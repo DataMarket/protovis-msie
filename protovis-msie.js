@@ -672,6 +672,44 @@ pv.VmlScene.panel = function(scenes) {
   return e;
 };
 
+
+pv.VmlScene.fill = function(e, scenes, i) {
+  var s = scenes[i], fill = s.fillStyle;
+  if (fill.opacity || s.events == "all") {
+    e = this.expect(e, "div", {}, {
+        "cursor": s.cursor,
+        "left": s.left,
+        "top": s.top,
+        "width": s.width,
+        "height": s.height,
+        "border": 'none',
+        "background": vml.color( fill.color ),
+        'position': 'absolute'
+      });
+    e = this.append(e, scenes, i);
+  }
+  return e;
+};
+
+
+pv.VmlScene.stroke = function(e, scenes, i) {
+  var s = scenes[i], stroke = s.strokeStyle;
+  if (stroke.opacity || s.events == "all") {
+    var linew = Math.round(s.lineWidth / this.scale);
+    e = this.expect(e, "div", {}, {
+        "cursor": s.cursor,
+        "left": s.left - (linew/2),
+        "top": s.top - (linew/2),
+        "width": Math.max(1E-10, s.width) - linew,
+        "height": Math.max(1E-10, s.height) - linew,
+        "border": linew + 'px solid ' + vml.color( stroke.color ),
+        'z-index': 1000,
+        'position': 'absolute'
+      });
+    e = this.append(e, scenes, i);
+  }
+  return e;
+};
 // Much of the event rewriting code is copyed and watered down
 // from the jQuery library's event hander. We have the luxury
 // of knowing that we're on MSIE<9 so we can despense with some
