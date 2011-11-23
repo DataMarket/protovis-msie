@@ -279,10 +279,12 @@ var vml = {
     }
     if ( !vml.styles ) {
       vml.styles = document.getElementById('protovisvml_styles') || document.createElement("style");
-      vml.styles.id = 'protovisvml_styles';
-      document.documentElement.firstChild.appendChild( vml.styles );
-      vml.styles.styleSheet.addRule( '.msvml', 'behavior:url(#default#VML);' );
-      vml.styles.styleSheet.addRule( '.msvml_block', 'position:absolute;top:0;left:0;' );
+      if ( vml.styles.id !== 'protovisvml_styles' ) {
+        vml.styles.id = 'protovisvml_styles';
+        document.documentElement.firstChild.appendChild( vml.styles );
+        vml.styles.styleSheet.addRule( '.msvml', 'behavior:url(#default#VML);' );
+        vml.styles.styleSheet.addRule( '.msvml_block', 'position:absolute;top:0;left:0;' );
+      }
       try {
         if ( !document.namespaces.v ) { document.namespaces.add( 'v', 'urn:schemas-microsoft-com:vml' ); }
       }
