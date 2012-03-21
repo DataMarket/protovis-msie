@@ -100,7 +100,7 @@ pv.VmlScene.stroke = function(e, scenes, i) {
         "width": Math.max(1E-10, s.width) - linew,
         "height": Math.max(1E-10, s.height) - linew,
         "border": linew + 'px solid ' + vml.color( stroke.color ),
-        'z-index': 1000,
+        'zoom': 1,
         'position': 'absolute'
       });
     e = this.append(e, scenes, i);
