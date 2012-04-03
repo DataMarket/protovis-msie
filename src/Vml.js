@@ -214,7 +214,7 @@ var vml = {
 
   // hex values lookup table
   _hex: pv.range(0,256).map(function(i){ return pv.Format.pad("0",2,i.toString(16)); }),
-  _colorcache: {},
+  _colorcache: { 'none': 'transparent' },
   color: function ( value, rgb ) {
     // TODO: deal with opacity here ?
     if ( !(value in vml._colorcache) && (rgb = /^rgb\((\d+),(\d+),(\d+)\)$/i.exec( value )) ) {
