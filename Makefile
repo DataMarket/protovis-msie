@@ -25,7 +25,7 @@ protovis-msie.js: $(SOURCE_FILES) Makefile
 %.min.js: %.js Makefile
 	@@if test ! -z ${UGLIFY}; then \
 		echo "Building" $@; \
-		${UGLIFY} < $< > $@; \
+		${UGLIFY} --ascii < $< > $@; \
 	else \
 		echo "You must have ${UGLIFY} installed in order to minify the library."; \
 	fi
