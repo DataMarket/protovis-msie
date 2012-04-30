@@ -46,7 +46,7 @@ pv.VmlScene.label = function(scenes) {
       'left': Math.round( s.left + dx ) + 'px',
       'position': 'absolute',
       'display': 'block',
-      'lineHeight': 1,
+      //'lineHeight': 1,
       'whiteSpace': 'nowrap',
       'zoom': 1,
       'cursor': 'default',
