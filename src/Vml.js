@@ -275,7 +275,7 @@ var vml = {
       vml.text_shim = document.getElementById('pv_vml_text_shim') || document.createElement('span');
       vml.text_shim.id = 'protovisvml_text_shim';
       vml.text_shim.style.cssText = "position:absolute;left:-9999em;top:-9999em;padding:0;margin:0;line-height:1;display:inline-block;white-space:nowrap;";
-      document.body.appendChild( vml.text_shim );
+      document.body.insertBefore( vml.text_shim, document.body.firstChild );
     }
     if ( !vml.styles ) {
       vml.styles = document.getElementById('protovisvml_styles') || document.createElement("style");
