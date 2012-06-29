@@ -96,7 +96,8 @@ var vml = {
       var t = /translate\((\d+(?:\.\d+)?)(?:,(\d+(?:\.\d+)?))?\)/.exec( attr.transform );
       if ( t && t[1] ) { o.translate_x = parseFloat( t[1] ); }
       if ( t && t[2] ) { o.translate_y = parseFloat( t[2] ); }
-      var r = /rotate\((\d+\.\d+|\d+)\)/.exec( attr.transform );
+      //put fix into regex to handle negative rotations
+      var r = /rotate\((\-?\d+\.\d+|\-?\d+)\)/.exec( attr.transform );
       if ( r ) { o.rotation = parseFloat( r[1] ) % 360; }
       // var scale_x = 1, scale_y = 1,
       // var s = /scale\((\d+)(?:,(\d+))?\)/i.exec( value );
@@ -172,6 +173,33 @@ var vml = {
             es = elm.style;
         es.left = (d.translate_x + d.x) + "px";
         es.top = (d.translate_y + d.y) + "px";
+        //handle rotation using simple css styles
+        if ( d.rotation ) {
+            var rotation = 0;
+            //do a bit of normalization here, i.e. negative rotation seems problematic, at least in IE8
+            if (d.rotation >=0 && d.rotation <= 360) {
+               rotation = d.rotation;
+            } else if (d.rotation < 0 && d.rotation >= -360) {
+               rotation = 360 + d.rotation;
+            } else if (d.rotation > 360) {
+               rotation = d.rotation % 360;
+            } else if (d.rotation < -360) {
+               rotation = 360 - d.rotation % 360 
+            }
+            var val = rotation * (Math.PI * 2 / 360);
+            var sine = Math.sin(val);
+            var cosine = Math.cos(val);
+
+            //put the styles in place, note only IE8 validated            
+            es['-ms-filter'] = "progid:DXImageTransform.Microsoft.Matrix(M11="+cosine+", M12="+(-sine)+", M21="+sine+", M22="+cosine+",sizingMethod='auto expand')";
+            es.filter= "progid:DXImageTransform.Microsoft.Matrix(M11="+cosine+", M12="+(-sine)+", M21="+sine+", M22="+cosine+",sizingMethod='auto expand')";
+            es['-moz-transform']="rotate("+rotation+"deg)";
+            es['-moz-transform-origin']="center";
+            es['-o-transform']="rotate("+rotation+"deg)";
+            es['-o-transform-origin']="center";
+            es['-webkit-transform']="rotate("+rotation+"deg)";
+            es['-webkit-transform-origin']="center";
+        }
         elm.coordorigin = "0,0";
         elm.coordsize = "21600,21600";
         vml.path( elm, attr.d );
@@ -396,8 +424,10 @@ var vml = {
 
         case "L": // lineTo (absolute)
           op = 'l';
-          args = [ (x = round( args[0] )),
-                   (y = round( args[1] )) ];
+          //support for multiple sets of coordinates
+          for ( var i = 0 ; i < args.length ; i++ ) {
+              args[i] = round(args[i]);
+          }
           break;
         case "l": // lineTo (relative)
           op = 'l';
