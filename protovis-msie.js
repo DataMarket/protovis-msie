@@ -176,7 +176,7 @@ var vml = {
         //handle rotation using simple css styles
         if ( d.rotation ) {
             var rotation = 0;
-            //do a bit of normalization here, i.e. negative rotation seems problematic, at least in IE8
+            //do a bit of normalization here, i.e. negative rotation seems problematic
             if (d.rotation >=0 && d.rotation <= 360) {
                rotation = d.rotation;
             } else if (d.rotation < 0 && d.rotation >= -360) {
@@ -190,15 +190,9 @@ var vml = {
             var sine = Math.sin(val);
             var cosine = Math.cos(val);
 
-            //put the styles in place, note only IE8 validated            
+            //put the styles in place           
             es['-ms-filter'] = "progid:DXImageTransform.Microsoft.Matrix(M11="+cosine+", M12="+(-sine)+", M21="+sine+", M22="+cosine+",sizingMethod='auto expand')";
             es.filter= "progid:DXImageTransform.Microsoft.Matrix(M11="+cosine+", M12="+(-sine)+", M21="+sine+", M22="+cosine+",sizingMethod='auto expand')";
-            es['-moz-transform']="rotate("+rotation+"deg)";
-            es['-moz-transform-origin']="center";
-            es['-o-transform']="rotate("+rotation+"deg)";
-            es['-o-transform-origin']="center";
-            es['-webkit-transform']="rotate("+rotation+"deg)";
-            es['-webkit-transform-origin']="center";
         }
         elm.coordorigin = "0,0";
         elm.coordsize = "21600,21600";
