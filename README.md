@@ -28,7 +28,6 @@ The shim can translate lines, areas, panels, rules, labels and most basic things
 Things known not to work are:
 
 * Polar interpolation for lines is missing.
-* Rotated labels are incorrectly positioned.
 * Label shadow is missing.
 * Label text does not support opacity.
 * Zoom property is not supported.
