@@ -193,6 +193,7 @@ var vml = {
     },
 
     // this allows reuse of the createElement function for actual VML
+    "vml:textpath": { rewrite: 'textpath' },
     "vml:skew": { rewrite: 'skew' },
     "vml:path": { rewrite: 'path' },
     "vml:stroke": { rewrite: 'stroke' },
@@ -344,10 +345,11 @@ var vml = {
     var bits = p.match( /([MLHVCSQTAZ][^MLHVCSQTAZ]*)/gi );
     var np = [], lastcurve = [];
     for ( var i=0,bl=bits.length; i<bl; i++ ) {
-      var itm  = bits[i],
-          op   = itm.charAt( 0 ),
-          args = itm.substring( 1 ).split( /[, ]/ );
-
+      var itm  = bits[i]
+        , op   = itm.charAt( 0 )
+        , args = itm.substring( 1 ).split( /[, ]/ )
+        , argi = 0
+        ;
       switch ( op ) {
 
         case 'M':  // moveto (absolute)
@@ -377,14 +379,18 @@ var vml = {
           break;
 
         case "L": // lineTo (absolute)
-          op = 'l';
-          args = [ (x = round( args[0] )),
-                   (y = round( args[1] )) ];
+          op = '';
+          while ( argi < args.length ) {
+            np.push( 'l', (x = round( args[argi++] )) + ',' +
+                          (y = round( args[argi++] )) );
+          }
           break;
         case "l": // lineTo (relative)
-          op = 'l';
-          args = [ (x = x + round( args[0] )),
-                   (y = y + round( args[1] )) ];
+          op = '';
+          while ( argi < args.length ) {
+            np.push( 'l', (x = x + round( args[argi++] )) + ',' +
+                          (y = y + round( args[argi++] )) );
+          }
           break;
 
         case "H": // horizontal lineto (absolute)
@@ -484,7 +490,9 @@ var vml = {
           op = '';
           args = [];
       }
-      np.push( op, args.join(',') );
+      if ( op ) {
+        np.push( op, args.join(',') );
+      }
     }
     return ( vml._pathcache[p] = (np.join('') + 'e') );
   }
