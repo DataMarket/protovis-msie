@@ -50,7 +50,7 @@ var vml = {
       var t = /translate\((\d+(?:\.\d+)?)(?:,(\d+(?:\.\d+)?))?\)/.exec( attr.transform );
       if ( t && t[1] ) { o.translate_x = parseFloat( t[1] ); }
       if ( t && t[2] ) { o.translate_y = parseFloat( t[2] ); }
-      var r = /rotate\((\d+\.\d+|\d+)\)/.exec( attr.transform );
+      var r = /rotate\((-?\d+\.\d+|-?\d+)\)/.exec( attr.transform );
       if ( r ) { o.rotation = parseFloat( r[1] ) % 360; }
       // var scale_x = 1, scale_y = 1,
       // var s = /scale\((\d+)(?:,(\d+))?\)/i.exec( value );
@@ -131,6 +131,19 @@ var vml = {
         vml.path( elm, attr.d );
         vml.fill( elm, attr );
         vml.stroke( elm, attr );
+        if ( d.rotation ) {
+          var r = (~~d.rotation % 360) * vml.d2r,
+              ct = Math.cos(r),
+              st = Math.sin(r);
+          vml.skew( elm, [
+            ct.toFixed( 8 ), -st.toFixed( 8 ),
+            st.toFixed( 8 ),  ct.toFixed( 8 ),
+            0, 0
+          ].join(','));
+        }
+        else {
+          vml.skew( elm, "" );
+        }
       },
       css: "top:0px;left:0px;width:1000px;height:1000px"
     },
@@ -180,6 +193,7 @@ var vml = {
     },
 
     // this allows reuse of the createElement function for actual VML
+    "vml:skew": { rewrite: 'skew' },
     "vml:path": { rewrite: 'path' },
     "vml:stroke": { rewrite: 'stroke' },
     "vml:fill": { rewrite: 'fill' }
@@ -268,6 +282,20 @@ var vml = {
     }
     return p;
   },
+
+  skew: function ( elm, matrix ) {
+    var p = elm.getElementsByTagName( 'skew' )[0];
+    if ( !p ) {
+      p = elm.appendChild( vml.createElement( 'vml:skew' ) );
+      p.origin = "-0.5 -0.5";
+      p.on = true;
+    }
+    if ( arguments.length > 1 ) {
+      p.setAttribute('matrix', matrix);
+    }
+    return p;
+  },
+
 
 
   init: function () {
